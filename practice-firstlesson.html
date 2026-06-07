@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <!-- DayJS external library: It helps us work with dates.To load the library, do the following: -->
+
+    <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+    const container=document.querySelector('.js-container');
+    //   const productCost=10+(2*8);
+    //   console.log(productCost);
+    //   const shippingCost=5;
+    //   const para=<div>
+    //     <p>Product Cost: $ {productCost}</p>
+    //     <p>Shipping Cost: $ {shippingCost}</p>
+    //     <p>Total Cost: $ {productCost+shippingCost}</p>
+    //     <button>Place your order</button>
+    //     </div>
+    //   ReactDOM.createRoot(container).render(para);
+
+    //   To get the current date, use the following syntax:
+    //   const currentdate=dayjs().format('MMMM D');
+    //   console.log(currentdate);
+    //   const fulldate=<p>Today is {currentdate}</p>
+    //   ReactDOM.createRoot(container).render(fulldate);
+
+      const currenttime=dayjs().format('HH:mm:ss');
+      const fulltime=<p>Current time: {currenttime}</p>
+      ReactDOM.createRoot(container).render(fulltime);
+
+      //Creating a Clock
+
+      const root=ReactDOM.createRoot(container);
+      root.render(fulltime);
+
+      setInterval(() => {
+        const currenttime=dayjs().format('HH:mm:ss');
+        const fulltime=<p>Current time: {currenttime}</p>;
+        root.render(fulltime);
+      }, 1000);
+      
+    </script>
+  </body>
+</html>

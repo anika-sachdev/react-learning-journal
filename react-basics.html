@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <!-- The above two lines (two script elements) basically load the React external library. 
+     
+    There are two files or external libraries being loaded as React can be used in Mobile apps and websites and requires different features for both. 
+    
+    The first one (only react) are the features that are common to both mobile and web apps where the second one (reawct-dom) are features specific to websites.
+    
+    Websites= React and ReactDOM
+    Mobile Apps= React and ReactNative-->
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+    <!-- We are loading another external library over here- Babel (javascript code) 
+     
+    Babel is basically a Javascript Compiler. It translates other languages into Javascript. When using React, we dont use Javascript . We use an enhanced version of Javascript called Javascript XML (JSX)
+    
+    It is the same as Javascript but we can write HTML directly in our Javascript code. 
+    
+    Babel is basically used to translate the JSX code into Javascript so that the browser can understand it.
+    
+    The above is first step of using Babel (just importing it). Below is the second step. 
+    
+    In the script element where you wanna type your React code, use the type attribute as follows. It will tell Babel to translate the JSX code into JS.-->
+
+    <script type="text/babel">
+      const button=<button>Hello</button> 
+      // The above is an example of JSX. We created a button and stored it in a variable. We wrote HTMl directly under Javascript.
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render('Welcome to SuperSimpleDev React Course');
+
+      // The above two lines set up React
+      // First we are using a queryselector to get a html element from the website and put it in our javascript. It is a part of DOM (Document Object Model) which basicaally lets teh HTML and Javascript part of the website interact and allows us to make changes in the website   
+      
+      //ReactDOM.createRoot basically sets up React. We need to give it in an HTML element inside the brackets to set up. So, basically anything we do using React will be displayed in that chosen HTML element or its called a container. React will only affect that container that we chose nothing except it.
+
+      //.render is a feature of React which is used to display something. So, we can display something inside that container that we chose (the div element).
+      
+      ReactDOM.createRoot(container).render(button);
+
+      //We can display HTML elements inside the container like the button above.
+
+      const paragraph=<p>paragraph of text</p>
+
+      ReactDOM.createRoot(container).render(paragraph);
+
+      //Right now this will only display one element at a time in the container. To display multiple elements, use <div> to group elements.
+
+        const div=<div>
+          <button>Hello</button>
+          <p>paragraph of text {2+2} </p>
+          </div>
+
+          ReactDOM.createRoot(container).render(div);
+    </script>
+  </body>
+</html>
+
+<!-- React is basically an external library of Javascript that helps us creates websites easier. 
+
+<script> element can load code from anywhere on the internet. In the 'src' attribute, just write the URL of the website/.js and it can load code from there. 
+
+
+ External library is basically a bunch of code that is outside the computer. We can load this code onto our website and use it.   
+    -->
