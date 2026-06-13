@@ -5,6 +5,8 @@
     <style>
         body{
             font-family: Arial;
+            margin-top:none;
+            margin-bottom:none; 
         }
         /* Sets the font of the entire website(body element as Arial) */
         .send-button{
@@ -28,6 +30,7 @@
         .chat-input-container
         {
             display:flex;
+            margin-bottom:60px;
         }
         .app-container
         {
@@ -35,9 +38,16 @@
             margin-left:auto;
             margin-right:auto;
             height:100vh;
+            display:flex;
+            flex-direction: column;
+            /* By default, flexbox positions the elements horizontally. So when we created a flexbox around the chatmessages and chatinput (together the app-container), 
+            the elements were positioned horizontally (in a row) and messed up the layout. 
+            Use flex-direction:column to position them vertically (by column)*/
         }
         /* vh stands for viewport height. This gives us the height of the browser. 
-        100vh means 100%of the browser. */
+        100vh means 100%of the browser (the part of the page that is visible). */
+        /* Helps fix the maximum length of the app/website. margin-left and margin-right being auto 
+        adds space to the left and right to the app so that it is automatically centered according to the screen. */
         .chat-message-user
         {
             display:flex;
@@ -52,6 +62,8 @@
             justify-content:left;
             align-items:start;
         }
+        /* The chat-message-user and chat-message-robot are containers that are flexboxes. When we added a margin at the bottom of the text box, the text gets longer (the size of the flex increases). This will by default stretch the elements of the flexbox (like the image of user and robot) vertically.
+        To fix this, flexbox has a feature called align-items. It controls how the elements are displayed vertically. By default, it is align-items:stretch. align-items:start will start the image at the top and wont stretch. */
         .chat-message-text
         {
             background-color: rgb(238,238,238);
@@ -60,13 +72,36 @@
             margin-right:10px;
             margin-left:10px;
             max-width:300px;
+            /* The text messages have a maximum width. */
+            margin-bottom:20px;
         }
         .chat-message-profile
         {
             width:45px;
         }
+        .chat-messages-container
+        {
+            flex-grow:1;
+            margin-top:20px;
+            overflow:scroll;
+            scrollbar-width:none;
+        }
         /* When a block element like div is inside a flexbox, it no longer takes up the entire line,it only takes up as much space as it needs to */
-        /* Helps fix the maximum length of the app/website. margin-left and margin-right being auto adds space to the left and right to the app so that it is automatically centered according to the screen. */
+        
+        /* To put the chatinput section at the extreme bottom of the page, we can use a flexbox.
+        1. We need to stretch the app-container to the bottom of the page.Inititally it only has the height that it needs.
+        We do this by setting the height of the app-container by height:100vh. 
+        This basically gives the app-container the same height as the browser.
+        
+        2.The app-container is a little too tall. It stretches to the bottom of the page. It can be scrolled.
+        This is because the body element has a default margin of 8px on all sides. So the height of the app-container basically becomes the same height as browser+8px(bottom)+8px(top)
+        So, we can remove the default margin.Now, the height of the app-container is the same height as that of the browser. No extra margins on top and bottom.
+        
+        3. Now, we can use a flexbox to make the chatmessages grow and push the chatinput to the bottom of the browser.
+        
+        4. Now, we want to make the chat messages section grow(by using flex-grow) so that it pushes the chat input at the bottom of the browser.*/
+
+
     </style>
     </style>
   </head>
@@ -153,25 +188,59 @@
    {
     // Initially, when we append/push the new chat message onto the array, it doesnt update the HTML. Basically, if we add anything to the array, for it to show as HTML, it should be state.
     // To update the HTML, we need to convert it into State. State is data connected to HTML.
-const array=React.useState([]);
+    const chatMessages=[];
+const array=React.useState(chatMessages);
     const current=array[0];//Current data
     const setChatMessages = array[1];//Function that updates the data.
 
+    const chatMessagesRef= React.useRef(null);
+React.useEffect(()=>
+{
+    const containerElem=chatMessagesRef.current; 
+    if(containerElem)
+{
+    containerElem.scrollTop=containerElem.scrollHeight;
+    //scrollTop tells us how far the element has been scrolled from the top. scrollHeight gives us the total height of all 
+    // content inside the element.
+
+    //Everytime a message is added, content height or scrollHeight increases. scrollTop is set to that height (the height of all the content inside the element).
+    // If earlier scrollHeight was 1000px, after new message it becomes 1100px. If we assign that scrollTop, we are telling it to move down 1100 px.
+    // This will automatically show the latest messages (autoscroll).
+
+}
+    // React will run this function after the component is created and everytime the component is updated.
+     // This code creates a Ref. It is a container with special React features. One special feature is that we can give
+    // this Ref or this container to React. React can automatically save an HTML element inside this Ref container.
+    //This line gives an initial value of null to the container Ref. So, we saved this Ref in a variable.
+
+    //Now, we give a props to the div element (chat-messages-container) that we want to scroll. the props is called ref and its value is
+    // variable we have saved our ref in. Now, it has saved the HTMl element inside this ref. To access this element, we go to useEffect
+    // because useEffect runs after the container is created and we need the container to be created first to access it.
+    
+},[chatMessages])
+//useEffect has a second parameter (an array) that controls when useEffect runs. Empty array ([]) mean useEffect will only run once
+// after the component is created. Inside the array, we can also put some data. This array is called Dependency Array. It controls when 
+// useEffect runs. Best practice is to give a dependency array to avoid running too often.
+// Now, React will run this function (useEffect) everytime chatMesages (the array of messages) changes.
+//To actually incorporate autoscroll, we need to get the HTML element we want to scroll into our Javascript is the chat-messages container
+// should autoscroll. To get that element, we cant manually use DOM like you would in Javascript. We use the React hook useRef().
 const chatMessageComponents = current.map((chatMessage)=>{
   return(
-    <>
+    <div>
     <ChatMessage 
     message={chatMessage.message}
     sender={chatMessage.sender} 
     key={chatMessage.id}/>
-    </>
+    </div>
   );
 })
 
 return(
         <div className="app-container">
-            <ChatInput current={current} setChatMessages={setChatMessages}/>
+            <div className="chat-messages-container" ref={chatMessagesRef}>
             {chatMessageComponents}
+            </div>
+             <ChatInput current={current} setChatMessages={setChatMessages}/>
         </div>
 
 );
@@ -181,3 +250,18 @@ return(
 </script>
   </body>
 </html>
+
+<!-- Hooks: Helps us insert React features into our component.For example, State is a React feature. We can insert that into our component by  
+React.useState(). State automatically updates the HTML when the data changes.Other hooks are (All start with "use"):
+1.useState()
+2.useEffect()
+3.useRef() 
+
+useEffect() lets us run some code after the component is created or updated. So, in our project, after our chat message is created, we wanna run some
+code to scroll to the bottom. (Auto Scroll to the bottom). After the component (Chat message) is created, we will run some code to automatically 
+scroll to the bottom.
+
+IN REACT, PUT YOUR HOOKS AT THE TOP OF THE COMPONENT (AFTER CREATION OF WHICH IT IS TO BE EXECUTED). HOOKS SHOULD NEVER BE INSIDE ANYTHING 
+LIKE A LOOP OR FUNCTION.
+
+Type a function inside the React.useEffect() using the arrow function.-->
